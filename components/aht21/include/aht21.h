@@ -19,8 +19,8 @@
 #define AHT21_TEMP_OFFSET 50.0f
 #define AHT21_RESOLUTION 1048576.0f
 
-static const uint8_t AHT_MEASUREMENT_CMD[] = {0x33, 0x00};
-static const uint8_t AHT_CALIBBRATION_CMD[] = {0x08, 0x00};
+static const uint8_t AHT_MEASUREMENT_CMD[] = {AHT_START_MES, 0x33, 0x00};
+static const uint8_t AHT_CALIBBRATION_CMD[] = {AHT21_CAL, 0x08, 0x00};
 
 typedef enum aht21_stat_t
 {

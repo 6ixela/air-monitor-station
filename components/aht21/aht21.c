@@ -21,7 +21,7 @@ void i2c_master_init(void)
 
 aht21_stat_t aht21_calibrate(void)
 {
-    esp_err_t err = aht21_write_data(AHT21_CAL, (uint8_t *)AHT_CALIBBRATION_CMD, sizeof(AHT_CALIBBRATION_CMD));
+    esp_err_t err = aht21_send_cmd((uint8_t *)AHT_CALIBBRATION_CMD, sizeof(AHT_CALIBBRATION_CMD));
     if (err == ESP_OK)
     {
         ESP_LOGI(TAG, "Sensor calibrated");
@@ -36,7 +36,7 @@ aht21_stat_t aht21_calibrate(void)
 
 aht21_stat_t aht_start_meas(void)
 {
-    esp_err_t err = aht21_write_data(AHT_START_MES, (uint8_t *)AHT_MEASUREMENT_CMD, sizeof(AHT_MEASUREMENT_CMD));
+    esp_err_t err = aht21_send_cmd((uint8_t *)AHT_MEASUREMENT_CMD, sizeof(AHT_MEASUREMENT_CMD));
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to start sensor measurement: %s", esp_err_to_name(err));
