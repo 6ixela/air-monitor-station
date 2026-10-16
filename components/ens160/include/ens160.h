@@ -17,8 +17,8 @@ static const uint8_t PART_ID_CMD[] = {0x33, 0x00};
 typedef struct ens160_data_t
 {
     uint8_t status;
-    uint8_t hum;
-    uint8_t temp;
+    float hum;
+    float temp;
     uint8_t aqi;
     uint16_t eco2;
     uint16_t tvoc;

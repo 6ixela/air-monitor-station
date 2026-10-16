@@ -148,6 +148,7 @@ static void mqtt_app_start(void)
     esp_mqtt_client_start(client);
 }
 
+
 void app_main(void)
 {
     ESP_LOGI(TAG, "[APP] Startup..");
@@ -170,10 +171,20 @@ void app_main(void)
      * Read "Establishing Wi-Fi or Ethernet Connection" section in
      * examples/protocols/README.md for more information about this function.
      */
-    ESP_ERROR_CHECK(example_connect());
+    // ESP_ERROR_CHECK(example_connect());
 
     i2c_master_init();
     set_ens160_opmode();
+    // compensate_temp_hum();
 
-    mqtt_app_start();
+    ens160_data_t *data;
+    while (1)
+    {
+        /* code */
+        data = get_sensor_data();
+        printf("ENS160 Data: Status=%d, Humidity=%.2f, Temperature=%.2f, AQI=%d, eCO2=%d, TVOC=%d\n",
+               data->status, data->hum, data->temp, data->aqi, data->eco2, data->tvoc);
+        vTaskDelay(10000 / portTICK_PERIOD_MS); // Publish every 10 seconds
+    }
+    // mqtt_app_start();
 }

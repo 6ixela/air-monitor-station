@@ -104,7 +104,7 @@ aht21_data_t aht21_get_temp_hum(void)
     result.temperature = (float)raw_temperature * AHT21_TEMP_SCALE / AHT21_RESOLUTION - AHT21_TEMP_OFFSET;
     result.humidity = (float)raw_humidity * AHT21_HUM_SCALE / AHT21_RESOLUTION;
     result.status = AHT21_OK;
-    ESP_LOGI(TAG, "Temperature: %f C, Humidity: %lu %%", result.temperature, result.humidity);
+    ESP_LOGI(TAG, "Temperature: %.2f C, Humidity: %.2f %%", result.temperature, result.humidity);
 
     return result;
 }
@@ -140,6 +140,7 @@ esp_err_t aht21_read_data(uint8_t reg_addr, uint8_t *data, size_t len)
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, (ATH_I2C_ADDRESS << 1) | I2C_MASTER_WRITE, true);
     // i2c_master_write_byte(cmd, reg_addr, true);
+    i2c_master_write_byte(cmd, reg_addr, true);
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, (ATH_I2C_ADDRESS << 1) | I2C_MASTER_READ, true);
     if (len > 1)

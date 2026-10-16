@@ -32,7 +32,7 @@ typedef enum aht21_stat_t
 typedef struct aht21_data_t
 {
     float temperature;
-    uint32_t humidity;
+    float humidity;
     aht21_stat_t status;
 } aht21_data_t;
 

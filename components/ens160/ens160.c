@@ -208,6 +208,11 @@ uint8_t get_ens160_status()
 void compensate_temp_hum(void)
 {
     aht21_data_t aht21_data = aht21_get_temp_hum();
+    if (aht21_data.status != AHT21_OK)
+    {
+        ESP_LOGE(TAG, "Cannot compensate ENS160: invalid AHT21 reading");
+        return;
+    }
     float temp_k = aht21_data.temperature + 273.15f; // convert to Kelvin
     int32_t temp_fixed = (int32_t)(temp_k * 64.0f);
     if (temp_fixed < 0)
@@ -218,12 +223,27 @@ void compensate_temp_hum(void)
     {
         temp_fixed = 0xFFFF;
     }
-    uint16_t temp = (uint16_t)temp_fixed;
-    uint8_t data[2] = {temp & 0xFF, (uint8_t)(temp >> 8)};
-
-    if (ens160_write_data(0x30, data, sizeof(data)) != ESP_OK)
+    uint8_t temp_data[2] = {(uint8_t)(temp_fixed & 0xFF), (uint8_t)((temp_fixed >> 8) & 0xFF)};
+    if (ens160_write_data(0x30, temp_data, sizeof(temp_data)) != ESP_OK)
     {
-        ESP_LOGE(TAG, "Failed to write compensated temp/hum to ENS160");
+        ESP_LOGE(TAG, "Failed to write compensated temperature to ENS160");
+        return;
+    }
+
+    int32_t humidity_fixed = (int32_t)(aht21_data.humidity * 512.0f);
+    if (humidity_fixed < 0)
+    {
+        humidity_fixed = 0;
+    }
+    if (humidity_fixed > 0xFFFF)
+    {
+        humidity_fixed = 0xFFFF;
+    }
+
+    uint8_t hum_data[2] = {(uint8_t)(humidity_fixed & 0xFF), (uint8_t)((humidity_fixed >> 8) & 0xFF)};
+    if (ens160_write_data(0x31, hum_data, sizeof(hum_data)) != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Failed to write compensated humidity to ENS160");
     }
 }
 
